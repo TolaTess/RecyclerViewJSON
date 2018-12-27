@@ -19,11 +19,15 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnItemClicklistener {
+
+    public static final String EXTRA_URL = "imageUrl";
+    public static final String EXTRA_NAME = "name";
+    public static final String EXTRA_DESC = "desc";
 
     private static final String TAG = "MainActivity";
 
-    private RecyclerView recyclerView;
+    private  RecyclerView recyclerView;
     private RecyclerViewAdapter recyclerViewAdapter;
     private ArrayList<ListItem> listItemList;
     private RequestQueue requestQueue;
@@ -67,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
                             recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, listItemList);
                             recyclerView.setAdapter(recyclerViewAdapter);
+                            recyclerViewAdapter.setmOnItemClicklistener(MainActivity.this);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -80,6 +85,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         requestQueue.add(request);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
+        Intent galleryIntent = new Intent(this, GalleryActivity.class);
+        ListItem clickedItem = listItemList.get(position);
+
+        galleryIntent.putExtra(EXTRA_URL, clickedItem.getImageURL());
+        galleryIntent.putExtra(EXTRA_NAME, clickedItem.getName());
+        galleryIntent.putExtra(EXTRA_DESC, clickedItem.getDesc());
+
+        startActivity(galleryIntent);
     }
 
 }
